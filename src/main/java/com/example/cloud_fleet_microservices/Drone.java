@@ -1,11 +1,29 @@
 package com.example.cloud_fleet_microservices;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+
+
+@Entity // This tells Spring that this class represents a permanent SQL table
+@Table(name = "drones") // Tells PostgreSQL to name the table "drones"
 public class Drone {
 
+    @Id //Every table needs a unique identifier. This enforces the Primary Key constraint
+    @Column(name = "drone_id") // This flags droneId as the Primary Key (PK) in the database
     private String droneId;
+
+    @Column(nullable = false) // Column let's us customize how the column look in PostgreSQL
     private String status;
+
+    @Column(nullable = false)
     private int battery;
+
+    @Column(name = "current_x")
     private int currentX;
+
+    @Column(name = "column_y")
     private int currentY;
 
     // Default constructor (Spring Boot needs this empty one to function properly later)
