@@ -23,7 +23,7 @@ public class Drone {
     @Column(name = "current_x")
     private int currentX;
 
-    @Column(name = "column_y")
+    @Column(name = "current_y")
     private int currentY;
 
     // Default constructor (Spring Boot needs this empty one to function properly later)
