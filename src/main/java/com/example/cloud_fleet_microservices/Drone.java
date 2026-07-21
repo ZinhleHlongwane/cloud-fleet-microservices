@@ -15,9 +15,12 @@ public class Drone {
     private String droneId;
 
     @Column(nullable = false) // Column let's us customize how the column look in PostgreSQL
+    @jakarta.validation.constraints.NotBlank(message = "Status cannot be blank")
     private String status;
 
     @Column(nullable = false)
+    @jakarta.validation.constraints.Min(value = 0, message = "Battery cannot be less than 0")
+    @jakarta.validation.constraints.Max(value = 100, message = "Battery cannot be more than 100")
     private int battery;
 
     @Column(name = "current_x")
