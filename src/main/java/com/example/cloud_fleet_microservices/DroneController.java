@@ -1,6 +1,8 @@
 package com.example.cloud_fleet_microservices;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import java.util.List;
 import com.example.cloud_fleet_microservices.DroneRepository;
 
@@ -22,7 +24,8 @@ public class DroneController {
 
     // POST a new drone
     @PostMapping // When sending data to this URL, it calls save() and puts the new drone into the H2 database
-    public Drone createDrone(@RequestBody Drone drone) {
-        return droneRepository.save(drone);
+    public ResponseEntity<Drone> createDrone(@Valid @RequestBody Drone drone) {
+        Drone savedDrone = droneRepository.save(drone);
+        return ResponseEntity.ok(savedDrone);
     }
 }
