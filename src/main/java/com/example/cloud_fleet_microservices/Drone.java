@@ -32,7 +32,7 @@ public class Drone {
     // Default constructor (Spring Boot needs this empty one to function properly later)
     public Drone() {}
 
-    // Constructor to quickly build a new drone object in the code
+    // Constructor to quickly build a new drone object in the code and for DTO Mapping
     public Drone(String droneId, String status, int battery, int currentX, int currentY) {
         this.droneId = droneId;
         this.status = status;
@@ -40,6 +40,8 @@ public class Drone {
         this.currentX = currentX;
         this.currentY = currentY;
     }
+
+    
 
     // Getter methods
     public String getDroneId() { return droneId; }
