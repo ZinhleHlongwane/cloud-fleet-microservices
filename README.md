@@ -89,3 +89,7 @@ Includes a `@WebMvcTest` slice test for `DroneController`, verifying that an inv
 ---
 
 *A personal project exploring REST API design, validation, and layered architecture (entity/DTO/mapper) with Spring Boot.*
+
+## WeThinkCode_ Verification
+
+WTC-58F79LXA
