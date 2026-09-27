@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "cloud-fleet"
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - "drone-service:8081"
+          - "mission-service:8082"
+          - "maintenance-service:8083"
+          - "telemetry-service:8084"
+          - "alert-service:8085"

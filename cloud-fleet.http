@@ -1,0 +1,53 @@
+### Drone Service - create drone
+POST http://localhost:8081/api/drones
+Content-Type: application/json
+
+{
+  "droneId": "DRN-001",
+  "serialNumber": "CF-2026-001",
+  "model": "Falcon X1",
+  "status": "AVAILABLE",
+  "batteryLevel": 92,
+  "maxPayloadKg": 5.5,
+  "latitude": -26.1076,
+  "longitude": 28.0567
+}
+
+### Drone Service - all drones
+GET http://localhost:8081/api/drones
+
+### Mission Service - create mission
+POST http://localhost:8082/api/missions
+Content-Type: application/json
+
+{
+  "origin": "Sandton",
+  "destination": "Midrand",
+  "payloadKg": 2.2,
+  "priority": "HIGH"
+}
+
+### Mission Service - assign mission
+PUT http://localhost:8082/api/missions/1/assign
+
+### Mission Service - start mission
+PUT http://localhost:8082/api/missions/1/start
+
+### Telemetry Service - low battery event
+POST http://localhost:8084/api/telemetry
+Content-Type: application/json
+
+{
+  "droneId": "DRN-001",
+  "batteryLevel": 18,
+  "latitude": -26.1,
+  "longitude": 28.0,
+  "altitudeMeters": 80,
+  "speedKph": 42
+}
+
+### Alert Service - unresolved alerts
+GET http://localhost:8085/api/alerts?acknowledged=false
+
+### Database health
+GET http://localhost:8081/ops/database
