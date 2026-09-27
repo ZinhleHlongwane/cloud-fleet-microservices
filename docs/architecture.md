@@ -1,27 +1,36 @@
 # Architecture
 
-Cloud Fleet is split into independently deployable Spring Boot services.
+Cloud Fleet is a distributed drone fleet management platform built as five independently deployable Spring Boot services.
+
+Each service owns a separate PostgreSQL schema and exposes its own REST API and operational metrics.
+
+## Services
 
 | Service | Port | Responsibility | Database schema |
 |---|---:|---|---|
-| Drone Service | 8081 | Drone registry, availability, battery and eligibility | `drone` |
-| Mission Service | 8082 | Mission lifecycle and drone assignment | `mission` |
-| Maintenance Service | 8083 | Scheduling, completion and overdue maintenance | `maintenance` |
-| Telemetry Service | 8084 | Time-series-like telemetry history and latest state | `telemetry` |
-| Alert Service | 8085 | Consumes operational events and manages alerts | `alert` |
+| Drone Service | 8081 | Drone registry, availability, battery status and eligibility | `drone` |
+| Mission Service | 8082 | Mission creation, assignment, lifecycle and drone coordination | `mission` |
+| Maintenance Service | 8083 | Maintenance scheduling, completion and overdue detection | `maintenance` |
+| Telemetry Service | 8084 | Telemetry ingestion, latest state and telemetry history | `telemetry` |
+| Alert Service | 8085 | Fleet event consumption and operational alert management | `alert` |
 
-All services use one PostgreSQL server locally but separate schemas to preserve ownership boundaries.
-In production the same design can move to separate databases/instances where required.
+Infrastructure services:
 
-## Communication
+| Component | Port | Responsibility |
+|---|---:|---|
+| PostgreSQL | 5432 | Persistent storage |
+| ActiveMQ | 61616 | Asynchronous messaging |
+| ActiveMQ Console | 8161 | Broker administration |
+| Prometheus | 9090 | Metrics collection |
+| Grafana | 3000 | Metrics visualisation |
 
-- REST: Mission Service -> Drone Service for drone selection and status changes.
-- ActiveMQ queue `fleet.events.queue`: mission, maintenance and telemetry events are consumed by Alert Service.
-- Actuator/Prometheus: every service exposes health and metrics.
+## Local database architecture
 
-## Failure model
+The local environment uses one PostgreSQL instance with separate schemas:
 
-Synchronous REST calls have explicit failures rather than silently proceeding.
-Async event producers are decoupled from alert persistence; alerts can recover after short service outages when broker delivery resumes.
-
-Future resilience improvements are documented in the roadmap: retries, circuit breakers, dead-letter queues and idempotency keys.
+```text
+drone
+mission
+maintenance
+telemetry
+alert

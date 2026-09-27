@@ -1,16 +1,18 @@
 # Testing strategy
 
-Current automated tests cover:
-- Drone creation, duplicate handling, updates and decommissioning.
-- Mission lifecycle state transitions.
-- Maintenance completion / alert state.
-- Telemetry low-battery event publishing.
-- Alert acknowledgement.
-- PostgreSQL repository integration through Testcontainers when Docker is available.
+Cloud Fleet uses a mix of automated unit tests, service-level verification, and end-to-end integration checks.
 
-Next growth target:
-- Controller/MockMvc tests for every endpoint.
-- ActiveMQ integration tests.
-- Mission-to-drone service contract tests.
-- Failure and timeout scenarios.
-- Migration smoke tests across all service schemas.
+## Automated tests
+
+Current automated tests cover:
+
+- Drone Service business logic
+- Mission lifecycle behaviour
+- Maintenance record behaviour
+- Telemetry low-battery event publishing
+- Alert acknowledgement behaviour
+
+The Maven build runs these tests as part of:
+
+```bash
+mvn clean test

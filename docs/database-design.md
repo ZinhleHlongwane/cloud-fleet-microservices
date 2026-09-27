@@ -1,32 +1,40 @@
 # Database design
 
-The local environment uses PostgreSQL 16 and one schema per service.
+Cloud Fleet uses PostgreSQL 16 with one service-owned schema per microservice.
 
-Key design choices:
-- Service-owned schemas reduce accidental cross-service coupling.
-- Flyway owns schema migrations. Hibernate runs with `ddl-auto=validate`.
-- Business constraints exist both in Java validation and SQL checks.
-- High-frequency access paths have indexes.
-- Audit timestamps are stored in UTC-compatible `TIMESTAMPTZ`.
+Current schemas:
 
-## Important indexes
+- `drone`
+- `mission`
+- `maintenance`
+- `telemetry`
+- `alert`
 
-### Drone selection
-`idx_drones_status_battery_payload(status, battery_level DESC, max_payload_kg)`
+Each Spring Boot service connects to its own schema while sharing one PostgreSQL instance in the local Docker environment.
 
-Supports mission assignment queries that need available drones with enough battery and payload capacity.
+## Design principles
 
-### Telemetry
-`idx_telemetry_drone_recorded(drone_id, recorded_at DESC)`
+- Each service owns its database schema.
+- Flyway manages versioned schema migrations.
+- Hibernate validates the database schema rather than creating it automatically.
+- Business constraints are enforced both in Java validation and SQL.
+- Frequently queried access paths are supported by indexes.
+- Operational timestamps use PostgreSQL `TIMESTAMPTZ`.
+- Database changes are added through new Flyway migrations rather than editing migrations that have already been applied.
 
-Supports "latest telemetry" and recent history retrieval.
+## Drone schema
 
-### Maintenance
-`idx_maintenance_due(completed_date, scheduled_date, alert_sent)`
+Important constraints include:
 
-Supports the overdue maintenance scan.
+- `drone_id` primary key
+- unique `serial_number`
+- battery level between 0 and 100
+- payload greater than zero
+- valid latitude and longitude ranges
 
-### Alerts
-`idx_alerts_ack_created(acknowledged, created_at DESC)`
+Important indexes:
 
-Supports operations dashboards showing unacknowledged alerts.
+```sql
+idx_drones_status
+idx_drones_battery
+idx_drones_status_battery_payload
