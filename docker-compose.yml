@@ -92,12 +92,15 @@ services:
 
   grafana:
     image: grafana/grafana:11.2.2
-    ports: ["3000:3000"]
+    ports: [ "3000:3000" ]
     environment:
       GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_PASSWORD: ChangeThisToAStrongPassword
     volumes:
       - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro
     depends_on:
       - prometheus
 
