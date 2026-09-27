@@ -36,12 +36,16 @@ public class DroneController {
     }
 
     @GetMapping("/{id}")
-    public DroneResponse one(@PathVariable String id) {
+    public DroneResponse one(
+            @PathVariable(name = "id") String id) {
+
         return service.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<DroneResponse> create(@Valid @RequestBody DroneRequest request) {
+    public ResponseEntity<DroneResponse> create(
+            @Valid @RequestBody DroneRequest request) {
+
         DroneResponse created = service.create(request);
 
         return ResponseEntity
@@ -51,7 +55,7 @@ public class DroneController {
 
     @PutMapping("/{id}")
     public DroneResponse update(
-            @PathVariable String id,
+            @PathVariable(name = "id") String id,
             @Valid @RequestBody DroneUpdateRequest request) {
 
         return service.update(id, request);
@@ -59,7 +63,7 @@ public class DroneController {
 
     @PatchMapping("/{id}/status")
     public DroneResponse changeStatus(
-            @PathVariable String id,
+            @PathVariable(name = "id") String id,
             @RequestParam(name = "status") DroneStatus status) {
 
         return service.changeStatus(id, status);
@@ -67,7 +71,9 @@ public class DroneController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void decommission(@PathVariable String id) {
+    public void decommission(
+            @PathVariable(name = "id") String id) {
+
         service.delete(id);
     }
 

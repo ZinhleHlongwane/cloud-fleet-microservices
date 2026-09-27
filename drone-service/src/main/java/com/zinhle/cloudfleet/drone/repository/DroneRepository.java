@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,8 +24,18 @@ public interface DroneRepository extends JpaRepository<Drone, String> {
               and d.maxPayloadKg >= :requiredPayload
             order by d.batteryLevel desc
             """)
-    List<Drone> findEligibleDrones(int minimumBattery, BigDecimal requiredPayload, Pageable pageable);
+    List<Drone> findEligibleDrones(
+            @Param("minimumBattery") int minimumBattery,
+            @Param("requiredPayload") BigDecimal requiredPayload,
+            Pageable pageable
+    );
 
-    @Query("select d from Drone d where d.batteryLevel <= :threshold order by d.batteryLevel asc")
-    List<Drone> findLowBattery(int threshold);
+    @Query("""
+            select d from Drone d
+            where d.batteryLevel <= :threshold
+            order by d.batteryLevel asc
+            """)
+    List<Drone> findLowBattery(
+            @Param("threshold") int threshold
+    );
 }
