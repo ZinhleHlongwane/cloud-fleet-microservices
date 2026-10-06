@@ -14,10 +14,6 @@
 
 Register drones, create delivery missions, let the platform pick an eligible drone, and watch alerts appear on their own when a battery runs low or maintenance is overdue.
 
-<!-- TODO: add a screenshot of the Grafana dashboard, then uncomment:
-<p align="center"><img src="docs/images/grafana-dashboard.png" alt="Cloud Fleet Grafana dashboard" width="800"></p>
--->
-
 ## Why I built it
 
 I wanted a project that feels like the problems backend and integration teams actually face: several services with their own data, synchronous calls *and* asynchronous events, a database I had to think hard about, and monitoring I could actually look at. Cloud Fleet is that project.
@@ -26,13 +22,27 @@ I wanted a project that feels like the problems backend and integration teams ac
 
 ```mermaid
 flowchart LR
-  M["Mission Service"] -- "REST: find eligible drone" --> D["Drone Service"]
-  M -- events --> Q{{"ActiveMQ"}}
-  T["Telemetry Service"] -- events --> Q
-  MT["Maintenance Service"] -- events --> Q
+
+  M["Mission Service"] -->|REST: find eligible drone| D["Drone Service"]
+
+  M -->|events| Q{{ActiveMQ}}
+  T["Telemetry Service"] -->|events| Q
+  MT["Maintenance Service"] -->|events| Q
+
   Q --> A["Alert Service"]
-  D & M & MT & T & A --> DB[("PostgreSQL<br/>one schema per service")]
-  P["Prometheus"] -. scrapes .-> D & M & MT & T & A
+
+  D --> DB[("PostgreSQL<br/>one schema per service")]
+  M --> DB
+  MT --> DB
+  T --> DB
+  A --> DB
+
+  P["Prometheus"] -.->|scrapes| D
+  P -.->|scrapes| M
+  P -.->|scrapes| MT
+  P -.->|scrapes| T
+  P -.->|scrapes| A
+
   G["Grafana"] --> P
 ```
 
